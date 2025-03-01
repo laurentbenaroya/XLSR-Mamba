@@ -57,7 +57,7 @@ Please remember to choose the correct score file and the dataset path.
 If you find our repository valuable for your work, please consider giving a star to this repo and citing our paper:
 ```
 @article{xiao2024xlsr,
-  title={XLSR-Mamba: A Dual-Column Bidirectional State Space Model for Spoofing Attack Detection},
+  title={{XLSR-Mamba}: A Dual-Column Bidirectional State Space Model for Spoofing Attack Detection},
   author={Xiao, Yang and Das, Rohan Kumar},
   journal={arXiv preprint arXiv:2411.10027},
   year={2024}
