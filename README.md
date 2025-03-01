@@ -36,7 +36,7 @@ We used the LA partition of ASVspoof 2019 for training and validation, it can be
 
 We used the ASVspoof 2021 database for evaluation. LA can be found [here](https://zenodo.org/records/4837263#.YnDIinYzZhE), and DF [here](https://zenodo.org/records/4835108#.YnDIb3YzZhE).
 
-We also used the 'In-the-Wild' dataset for evaluation, it can be downloaded from [here](https://deepfake-total.com/in_the_wild)
+We also used the 'In-the-Wild' dataset for evaluation, it can be downloaded from [here](https://deepfake-total.com/in_the_wild).
 ## Training & Testing on fixed-length input
 To train and produce the score for the LA set evaluation, run:
 ```bash
