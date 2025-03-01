@@ -51,7 +51,7 @@ You can evaluate the score files by:
 ```bash
 bash evaluate.sh
 ```
-Please remember to choose correct score file and the dataset path.
+Please remember to choose the correct score file and the dataset path.
 
 ## Citation
 If you find our repository valuable for your work, please consider giving a star to this repo and citing our paper:
