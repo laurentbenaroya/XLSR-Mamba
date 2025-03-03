@@ -9,7 +9,7 @@ You need to create the running environment by [Anaconda](https://www.anaconda.co
 First, create and activate the environment:
 
 ```bash
-conda create -n XLSR_Mamba python=3.8
+conda create -n XLSR_Mamba python=3.10
 conda activate XLSR_Mamba
 ```
 
