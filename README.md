@@ -29,7 +29,7 @@ pip install --editable ./
 ```
 ### Pretrained Model
 The pretrained model XLSR can be found at this [link](https://dl.fbaipublicfiles.com/fairseq/wav2vec/xlsr2_300m.pt).
-We will upload the pretrained models of our experiments soon.
+We have uploaded the pretrained models of our experiments [here](https://drive.google.com/file/d/14e6d6z4KTt5ZDPTjh5PJloNzQAxivyEu/view?usp=sharing).
 
 ### Datasets
 We used the LA partition of ASVspoof 2019 for training and validation, it can be downloaded from [here](https://datashare.ed.ac.uk/handle/10283/3336).
@@ -47,11 +47,20 @@ To train and produce the score for DF set evaluation, run:
 python main.py --algo 3
 ```
 Upon running this command, a new folder will be generated within the 'models' directory, containing the top 5 epochs from this training loop. Additionally, two score files will be created: one for LA and another for DF, both located in the 'Scores' folder.
-You can evaluate the score files by:
+You can evaluate the score by:
 ```bash
 bash evaluate.sh
 ```
 Please remember to choose the correct score file and the dataset path.
+
+## Results
+
+
+Dataset | **EER (%)** | **min t-DCF** |
+--------|--------------------|--------------------|
+ASVspoof2021 LA  | **0.93**  | **0.208**          |
+ASVspoof2021 DF  | **1.88**  | **-**              | 
+In-The-Wild      | **6.71**  | **-**              |
 
 ## Citation
 If you find our repository valuable for your work, please consider giving a star to this repo and citing our paper:
