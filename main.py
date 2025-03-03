@@ -6,7 +6,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from data_utils import Dataset_train, Dataset_eval, Dataset_in_the_wild_eval, genSpoof_list
-from model_bimamba import Model
+from model import Model
 from utils import reproducibility
 from utils import read_metadata
 import numpy as np
@@ -62,27 +62,27 @@ def evaluate_accuracy(dev_loader, model, device):
     return val_loss
 
 def produce_evaluation_file(dataset, model, device, save_path):
-    data_loader = DataLoader(dataset, batch_size=10, shuffle=False, drop_last=False)
+    data_loader = DataLoader(dataset, batch_size=40, shuffle=False, drop_last=False)
     model.eval()
     fname_list = []
     score_list = []
-    
-    for batch_x,utt_id in tqdm(data_loader,total=len(data_loader)):
-        fname_list = []
-        score_list = []  
-        batch_x = batch_x.to(device)  
-        batch_out = model(batch_x)
-        batch_score = (batch_out[:, 1]  
-                       ).data.cpu().numpy().ravel() 
-        # add outputs
-        fname_list.extend(utt_id)
-        score_list.extend(batch_score.tolist())
-        
-        with open(save_path, 'a+') as fh:
-            for f, cm in zip(fname_list,score_list):
-                fh.write('{} {}\n'.format(f, cm))
-        fh.close()   
-    print('Scores saved to {}'.format(save_path))
+    with torch.no_grad():
+        for batch_x,utt_id in tqdm(data_loader,total=len(data_loader)):
+            fname_list = []
+            score_list = []  
+            batch_x = batch_x.to(device)  
+            batch_out = model(batch_x)
+            batch_score = (batch_out[:, 1]  
+                        ).data.cpu().numpy().ravel() 
+            # add outputs
+            fname_list.extend(utt_id)
+            score_list.extend(batch_score.tolist())
+            
+            with open(save_path, 'a+') as fh:
+                for f, cm in zip(fname_list,score_list):
+                    fh.write('{} {}\n'.format(f, cm))
+            fh.close()   
+        print('Scores saved to {}'.format(save_path))
 
 def train_epoch(train_loader, model, lr,optim, device):
     num_total = 0.0
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     print('no. of training trials',len(files_id_train))
     
     train_set=Dataset_train(args,list_IDs = files_id_train,labels = label_trn,base_dir = os.path.join(args.database_path+'LA/{}_{}_train/'.format(prefix_2019.split('.')[0],args.track)),algo=args.algo)
-    train_loader = DataLoader(train_set, batch_size=args.batch_size, num_workers = 10, shuffle=True,drop_last = True)
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, num_workers = 20, shuffle=True,drop_last = True)
     
     del train_set, label_trn
     
@@ -264,7 +264,7 @@ if __name__ == '__main__':
     dev_set = Dataset_train(args,list_IDs = files_id_dev,
 		    labels = labels_dev,
 		    base_dir = os.path.join(args.database_path+'LA/{}_{}_dev/'.format(prefix_2019.split('.')[0],args.track)), algo=args.algo)
-    dev_loader = DataLoader(dev_set, batch_size=8, num_workers=10, shuffle=False)
+    dev_loader = DataLoader(dev_set, batch_size=8, num_workers=20, shuffle=False)
     del dev_set,labels_dev
 
     
@@ -324,20 +324,24 @@ if __name__ == '__main__':
         model.load_state_dict(torch.load(os.path.join(model_save_path, 'best.pth')))
         print('Model loaded : {}'.format(os.path.join(model_save_path, 'best.pth')))
 
-    eval_tracks = ['LA'] if args.algo == 5 else ['DF']
+    tracks = 'LA' if args.algo == 5 else 'DF'
 
     if args.comment_eval:
         model_tag = model_tag + '_{}'.format(args.comment_eval)
 
-    for tracks in eval_tracks:
-        if not os.path.exists('Scores/{}/{}.txt'.format(tracks, model_tag)):
-            prefix      = 'ASVspoof_{}'.format(tracks)
-            prefix_2019 = 'ASVspoof2019.{}'.format(tracks)
-            prefix_2021 = 'ASVspoof2021.{}'.format(tracks)
+    if not os.path.exists('./Scores/{}'.format(tracks)):
+        if not os.path.exists('./Scores'):
+            os.mkdir('./Scores')
+        os.mkdir('./Scores/{}'.format(tracks))
 
-            file_eval = read_metadata( dir_meta =  os.path.join(args.protocols_path+'{}/{}_cm_protocols/{}.cm.eval.trl.txt'.format(tracks, prefix,prefix_2021)), is_eval=True)
-            print('no. of eval trials',len(file_eval))
-            eval_set=Dataset_eval(list_IDs = file_eval,base_dir = os.path.join(args.database_path+'{}/ASVspoof2021_{}_eval/'.format(tracks,tracks)),track=tracks)
-            produce_evaluation_file(eval_set, model, device, 'Scores/{}/{}.txt'.format(tracks, model_tag))
-        else:
-            print('Score file already exists')
+    if not os.path.exists('Scores/{}/{}.txt'.format(tracks, model_tag)):
+        prefix      = 'ASVspoof_{}'.format(tracks)
+        prefix_2019 = 'ASVspoof2019.{}'.format(tracks)
+        prefix_2021 = 'ASVspoof2021.{}'.format(tracks)
+
+        file_eval = read_metadata( dir_meta =  os.path.join(args.protocols_path+'{}/{}_cm_protocols/{}.cm.eval.trl.txt'.format(tracks, prefix,prefix_2021)), is_eval=True)
+        print('no. of eval trials',len(file_eval))
+        eval_set=Dataset_eval(list_IDs = file_eval,base_dir = os.path.join(args.database_path+'{}/ASVspoof2021_{}_eval/'.format(tracks,tracks)),track=tracks)
+        produce_evaluation_file(eval_set, model, device, './Scores/{}/{}.txt'.format(tracks, model_tag))
+    else:
+        print('Score file already exists')
