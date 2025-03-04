@@ -27,8 +27,9 @@ cd fairseq_dir
 git checkout a54021305d6b3c
 pip install --editable ./
 ```
-### Pretrained Model
+### Pretrained XLSR
 The pretrained model XLSR can be found at this [link](https://dl.fbaipublicfiles.com/fairseq/wav2vec/xlsr2_300m.pt).
+
 We have uploaded the pretrained models of our experiments [here](https://drive.google.com/file/d/14e6d6z4KTt5ZDPTjh5PJloNzQAxivyEu/view?usp=sharing).
 
 ### Datasets
@@ -53,14 +54,30 @@ bash evaluate.sh
 ```
 Please remember to choose the correct score file and the dataset path.
 
+### Pretrained models
+We have uploaded the pretrained models of our experiments to 🤗 HugginFace:
+<div align="center">
+
+| **Model** | **#Total Params** | **Download** |
+| :------------: | :------------: | :------------: |
+| XLSR-Mamba-LA | 319M  | [🤗 HuggingFace](https://huggingface.co/AustinXiao/XLSR-Mamba-LA)  |
+| XLSR-Mamba-DF | 319M  | [🤗 HuggingFace](https://huggingface.co/AustinXiao/XLSR-Mamba-DF)  |
+
+</div>
+
+You could also download the checkpoints by [Google Drive](https://drive.google.com/file/d/14e6d6z4KTt5ZDPTjh5PJloNzQAxivyEu/view?usp=sharing).
+
 ## Results
 
+<div align="center">
+  
+|Dataset | **EER (%)** | **min t-DCF** |
+|--------|--------------------|--------------------|
+|ASVspoof2021 LA  | **0.93**  | **0.208**          |
+|ASVspoof2021 DF  | **1.88**  | **-**              | 
+|In-The-Wild      | **6.71**  | **-**              |
 
-Dataset | **EER (%)** | **min t-DCF** |
---------|--------------------|--------------------|
-ASVspoof2021 LA  | **0.93**  | **0.208**          |
-ASVspoof2021 DF  | **1.88**  | **-**              | 
-In-The-Wild      | **6.71**  | **-**              |
+</div>
 
 ## Citation
 If you find our repository valuable for your work, please consider giving a star to this repo and citing our paper:
