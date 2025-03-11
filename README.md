@@ -3,7 +3,7 @@ Official Implementation of our work ["XLSR-Mamba: A Dual-Column Bidirectional St
 If you have any questions on this repository or the related paper, please [create an issue](https://github.com/swagshaw/XLSR-Mamba/issues/new) or [email me](mailto:yxiao009+github@e.ntu.edu.sg).
 
 ## News
-[March. 2025] We would like to inform you that the scores for XLSR-Mamba achieves 2nd Rank on the [Speech-DF-Arena leaderboard](https://huggingface.co/spaces/Speech-Arena-2025/Speech-DF-Arena). 
+[Mar. 2025] We would like to inform you that the scores for XLSR-Mamba achieves 2nd Rank on the [Speech-DF-Arena leaderboard](https://huggingface.co/spaces/Speech-Arena-2025/Speech-DF-Arena). 
 
 [Feb. 2025] We release code, checkpoints, and extracted scores for XLSR-Mamba.
 
