@@ -1,4 +1,6 @@
 # XLSR-Mamba Official Pytorch Implementation
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/xlsr-mamba-a-dual-column-bidirectional-state/audio-deepfake-detection-on-asvspoof-2021)](https://paperswithcode.com/sota/audio-deepfake-detection-on-asvspoof-2021?p=xlsr-mamba-a-dual-column-bidirectional-state)
+
 Official Implementation of our work ["XLSR-Mamba: A Dual-Column Bidirectional State Space Model for Spoofing Attack Detection"](https://arxiv.org/pdf/2411.10027) published in IEEE Signal Processing Letters. For detailed insights into our methodology, you can access the complete paper.
 If you have any questions on this repository or the related paper, please [create an issue](https://github.com/swagshaw/XLSR-Mamba/issues/new) or [email me](mailto:yxiao009+github@e.ntu.edu.sg).
 
