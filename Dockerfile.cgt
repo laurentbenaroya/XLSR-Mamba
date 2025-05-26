@@ -1,0 +1,76 @@
+# Dockerfile pour XLSR-Mamba avec Python 3.10
+
+FROM pytorch/pytorch:2.2.1-cuda11.8-cudnn8-devel
+
+# Installer les dépendances système
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      git ffmpeg libsndfile1 cmake nano && \
+    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      libsndfile1-dev \   
+      libffi-dev \       
+      python3-dev \      
+      build-essential \  
+      pkg-config && \
+    rm -rf /var/lib/apt/lists/*
+# # 1. Dépendances système pour audio / compilation
+# RUN apt-get update && \
+#     apt-get install -y --no-install-recommends \
+#       git \
+#       ffmpeg \
+#       libsndfile1 \
+#       build-essential \
+#       nano \
+#       cmake && \
+#     rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 2. Copier et installer les dépendances Python
+# On installe torch/cu118, torchvision et torchaudio via PyTorch index
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir \
+      torch==2.2.1+cu118 \
+      torchvision==0.17.1+cu118 \
+      torchaudio==2.2.1+cu118 \
+      --extra-index-url https://download.pytorch.org/whl/cu118
+# COPY requirements_v2.txt /app/
+
+RUN pip install --no-cache-dir mamba-ssm==1.1.4 
+RUN pip install --no-cache-dir causal-conv1d==1.1.3.post1
+RUN pip install --no-cache-dir transformers==4.38.1 huggingface-hub==0.20.3
+RUN pip install --no-cache-dir pytorch-lightning==2.4.0 \
+        hydra-core==1.1.2 \
+        omegaconf==2.1.2 \
+        jsonargparse==4.32.0     
+RUN pip install --no-cache-dir soundfile==0.12.1 
+RUN pip install --no-cache-dir         librosa==0.10.2.post1 
+ RUN pip install --no-cache-dir        scipy==1.11.4 
+ RUN pip install --no-cache-dir        matplotlib==3.8.2 
+RUN pip install --no-cache-dir         tqdm==4.66.1
+RUN pip install --no-cache-dir \
+        wandb==0.17.5 \
+        rich==13.7.1 \
+        coloredlogs==15.0.1
+# RUN pip install --no-cache-dir -r requirements_v2.txt
+RUN pip install --no-cache-dir  bitarray==3.4.2
+# 2) Récupérez et installez Fairseq DIRECTEMENT depuis Git (sans ses deps)
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir \
+      git+https://github.com/facebookresearch/fairseq.git@a54021305d6b3c#egg=fairseq \
+      --no-deps
+# … après pip install fairseq …  
+RUN find $(python -c "import site; print(site.getsitepackages()[0])")/fairseq -type f -name '*.py' \
+    -exec sed -i \
+      -e 's/np\.float\b/float/g' \
+      -e 's/np\.double\b/np.float64/g' {} +
+
+# (Optionnel) Vérification en build pour debugger :
+RUN python -c "import fairseq; print('Fairseq installé :', fairseq.__version__)"
+RUN pip install --no-cache-dir pandas
+# # 4. Copier le code de XLSR-Mamba et définir le point d’entrée
+COPY . /app
+# Remplacez 'train.py' par votre script principal si besoin
+CMD ["/bin/bash"]
