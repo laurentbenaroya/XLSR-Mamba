@@ -2,7 +2,7 @@ import torch.nn as nn
 import fairseq
 from dataclasses import dataclass, field
 import torch.nn.functional as F
-from mamba_blocks import MixerModel
+from .mamba_blocks import MixerModel
 
 @dataclass
 class MambaConfig:
